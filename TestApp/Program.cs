@@ -1,7 +1,5 @@
 ﻿//This is a console executable that can be used to "human-test" the WordFinder class, see the unit tests project also.
 
-using System.Collections.Generic;
-
 Console.WriteLine("Test Application for the QU Challenge");
 Console.WriteLine();
 

@@ -5,7 +5,7 @@ Challenge for CL
 
 ### The simple array approach (this is the approach I used)
 
-What I ended up doing, taking advantage that words can only be found from left to right in columns and from top to bottom in rows, is this:
+What I did, taking advantage that words can only be found from left to right in columns and from top to bottom in rows, is this:
 
 1) In the constructor the received strings are processed to extract a new string for each row (going from top to bottom)
 2) These strings are joined to the original column strings to form a single array, which will be the universe for our searches. This duplicates the number of strings to search, but since the maximum matrix size is expected to be 64x64 the maximum length of our search-universe array will be 128.
