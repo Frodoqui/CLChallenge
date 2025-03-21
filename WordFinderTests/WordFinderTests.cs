@@ -1,72 +1,128 @@
-using RandomString4Net;
-using WordFinder;
-
 namespace WordFinderTests
 {
     public class WordFinderTests
     {
 
-        public readonly IEnumerable<string> _FullRandomMatrix;
-        public readonly IEnumerable<string> _RandomWordStream_10000;
-        public readonly IEnumerable<string> _RandomWordStream_100000;
-        public readonly IEnumerable<string> _RandomWordStream_1000000;
-        public readonly IWordFinder _WordFinder;
 
-        public WordFinderTests()
+        [Fact]
+        public void Test_Sample_Case()
         {
-            _FullRandomMatrix = CreateRandomMatrix(64, 64);
-            _RandomWordStream_10000 = CreateRandomWordsStream(10000);
-            _RandomWordStream_100000 = CreateRandomWordsStream(100000);
-            _RandomWordStream_1000000 = CreateRandomWordsStream(1000000);
-            _WordFinder = new WordFinder.WordFinder(_FullRandomMatrix);
-        }
+            // Setup
+            var words = new string[4] { "chill", "cold", "wind", "snow" };
+            var matrix = new string[5] {
+             "abcdc",
+             "rgwio",
+             "chill",
+             "pqnsd",
+             "uvdxy"
+            };
 
-        private IEnumerable<string> CreateRandomMatrix(int rows, int columns)
-        {
-            List<string> matrix = [.. RandomString.GetStrings(Types.ALPHABET_LOWERCASE, rows, columns)];
-            return matrix;
-        }
+            IEnumerable<string> expectedResults = ["chill", "cold", "wind"];
 
-        private IEnumerable<string> CreateRandomWordsStream(int words)
-        {
-            return RandomString.GetStrings(Types.ALPHABET_LOWERCASE, words, 4);
+            WordFinder.WordFinder wordFinder = new(matrix);
+
+            // Act
+            var actualResults = wordFinder.Find(words);
+
+            // Assert
+            Assert.Equivalent(expectedResults, actualResults, true);
+
         }
 
         [Fact]
-        public void Test_FullMatrix_10000_words_sequential()
+        public void Repeated_Word_Is_Returned_Only_Once()
         {
-            var result = _WordFinder.Find(_RandomWordStream_10000);
+            // Setup
+            var words = new string[5] { "chill", "cold", "wind", "snow", "chill" };
+            var matrix = new string[5] {
+             "abcdc",
+             "rgwio",
+             "chill",
+             "pqnsd",
+             "uvdxy"
+            };
+
+            IEnumerable<string> expectedResults = ["chill", "cold", "wind"];
+
+            WordFinder.WordFinder wordFinder = new(matrix);
+
+            // Act
+            var actualResults = wordFinder.Find(words);
+
+            // Assert
+            Assert.Equivalent(expectedResults, actualResults, true);
+
         }
 
         [Fact]
-        public void Test_FullMatrix_100000_words_sequential()
+        public void No_Matches_Returns_Empty_Set()
         {
-            var result = _WordFinder.Find(_RandomWordStream_100000);
+            // Setup
+            var words = new string[4] { "warm", "hot", "still", "snow" };
+            var matrix = new string[5] {
+             "abcdc",
+             "rgwio",
+             "chill",
+             "pqnsd",
+             "uvdxy"
+            };
+
+            IEnumerable<string> expectedResults = [];
+
+            WordFinder.WordFinder wordFinder = new(matrix);
+
+            // Act
+            var actualResults = wordFinder.Find(words);
+
+            // Assert
+            Assert.Equivalent(expectedResults, actualResults, true);
+
         }
 
         [Fact]
-        public void Test_FullMatrix_1000000_words_sequential()
+        public void Only_Top_10_Repeated_Matches_Returned()
         {
-            var result = _WordFinder.Find(_RandomWordStream_1000000);
+            // Setup
+            var words = new string[15] { "chill", "cold", "wind", "freeze", "storm", "blizzard", "winter", "cloud", "sled", "sky", "ice", "rain", "drizzle", "water", "snow" }         ;
+            var matrix = new string[20]  {
+                 "coldorgwioqnsdfreeze",
+                 "orgwiowindasdadsadff",
+                 "lchillcnquertyabcdef",
+                 "dpqnsdndstormkjhgdce",
+                 "auvdxycoldfblizzardf",
+                 "winteraaaarkjhgfbnmv",
+                 "skyrainvvgepojhervnx",
+                 "cdbaktrewsesledookul",
+                 "asksjkwefczraintrrik",
+                 "hhdlfreezeegetymnsog",
+                 "dqlearbodduuppchilld",
+                 "arbdwintesporgcloudd",
+                 "windireegtconvfufaze",
+                 "tfeenrepzojoljfreeze",
+                 "bardtaeezrwinteredzg",
+                 "relfeieezmmofdfagere",
+                 "edcvrnefrecoldthmjdt",
+                 "drmkjhgfdspoiuuytrew",
+                 "sledffrgfghcjlkfhjkz",
+                 "blizzardwinterskyice",
+                 };
+
+            IEnumerable<string> expectedResults = [
+            "wind","freeze","cold","winter","sled","rain","blizzard","sky","chill","storm",
+            ];
+
+            WordFinder.WordFinder wordFinder = new(matrix);
+
+            // Act
+            var actualResults = wordFinder.Find(words);
+
+            Assert.Equivalent(expectedResults, actualResults, true);
+
         }
 
-        [Fact]
-        public void Test_FullMatrix_10000_words_parallel()
-        {
-            var result = _WordFinder.ParallelFind(_RandomWordStream_10000);
-        }
 
-        [Fact]
-        public void Test_FullMatrix_100000_words_parallel()
-        {
-            var result = _WordFinder.ParallelFind(_RandomWordStream_100000);
-        }
 
-        [Fact]
-        public void Test_FullMatrix_1000000_words_parallel()
-        {
-            var result = _WordFinder.ParallelFind(_RandomWordStream_1000000);
-        }
+       
 
     }
 }
